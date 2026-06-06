@@ -7,7 +7,7 @@ on:
   # Evento 2: Ejecución programada (Cron Job)
   # La siguiente línea ejecutará el workflow cada 6 horas [citation:5][citation:8]
   schedule:
-    - cron:  '0 */6 * * *'   # A las 0 minutos, cada 6 horas (UTC)
+    - cron:  '*/15 * * * *'   # A las 0 minutos, cada 6 horas (UTC)
     # - cron:  '*/30 * * * *' # (Opcional) Para probar: cada 30 minutos
 
 jobs:
