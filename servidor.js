@@ -1,11 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Cargar las películas desde el JSON
+// Middleware para leer JSON en las peticiones
+app.use(express.json());
+
 function cargarPeliculas() {
     try {
         const data = fs.readFileSync('peliculas.json', 'utf8');
@@ -14,9 +17,6 @@ function cargarPeliculas() {
         return {};
     }
 }
-
-// Servir archivos estáticos (CSS, JS si los hubiera)
-app.use(express.static('public'));
 
 // Página principal
 app.get('/', (req, res) => {
@@ -97,8 +97,37 @@ app.get('/api/pelicula/:tmdbId', (req, res) => {
     }
 });
 
+// Endpoint secreto para actualizar el índice (Webhook)
+app.post('/webhook/actualizar', (req, res) => {
+    const secreto = req.headers['x-webhook-secret'];
+    const SECRETO_CORRECTO = process.env.WEBHOOK_SECRET || "MiClaveSuperSecreta123";
+    
+    if (secreto !== SECRETO_CORRECTO) {
+        console.log(`❌ Webhook rechazado: secreto inválido`);
+        return res.status(403).json({ error: 'No autorizado' });
+    }
+    
+    console.log("🔄 Webhook recibido. Actualizando índice...");
+    
+    exec('node indexador.js', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`❌ Error al ejecutar indexador: ${error}`);
+            return res.status(500).json({ error: 'Error al actualizar' });
+        }
+        
+        console.log("✅ Índice actualizado correctamente");
+        console.log(stdout);
+        
+        res.json({ 
+            success: true, 
+            message: 'Índice actualizado correctamente',
+            output: stdout 
+        });
+    });
+});
 
-
+// Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log(`📺 Webhook disponible en: /webhook/actualizar`);
 });
