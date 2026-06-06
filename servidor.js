@@ -97,9 +97,7 @@ app.get('/api/pelicula/:tmdbId', (req, res) => {
     }
 });
 
-// Iniciar el servidor
-// servidor.js - Verifica que tenga estas líneas
-const PORT = process.env.PORT || 3000;
+
 
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
