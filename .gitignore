@@ -1,0 +1,15 @@
+# Variables de entorno (contraseñas)
+.env
+
+# Dependencias de Node
+node_modules/
+
+# Archivos generados
+peliculas.json
+
+# Logs
+*.log
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
