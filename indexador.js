@@ -39,13 +39,14 @@ async function main() {
 
     console.log("🔄 Procesando archivos...");
 
-    for (const file of files) {
-        if (file.directory) continue; // Saltar carpetas
-        
-        const nombre = file.name;
-        
-        // Buscar ID entre signos = (formato: " = 9495 = ")
-        const match = nombre.match(/=\s*(\d+)\s*=/);
+   for (const file of files) {
+    if (file.directory) continue;
+    
+    // Esperar 2 segundos antes de procesar cada archivo
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const nombre = file.name;
+    const match = nombre.match(/=\s*(\d+)\s*=/);
         
         if (match) {
             const tmdbId = match[1];
