@@ -98,7 +98,9 @@ app.get('/api/pelicula/:tmdbId', (req, res) => {
 });
 
 // Iniciar el servidor
+// servidor.js - Verifica que tenga estas líneas
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📺 Ejemplo: El cuervo (ID 9495)`);
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
 });
