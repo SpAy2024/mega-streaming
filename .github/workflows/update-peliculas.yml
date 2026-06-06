@@ -1,0 +1,42 @@
+name: Actualizar peliculas.json desde MEGA
+
+# Evento 1: Ejecución manual desde la pestaña "Actions" de GitHub
+on:
+  workflow_dispatch:
+
+  # Evento 2: Ejecución programada (Cron Job)
+  # La siguiente línea ejecutará el workflow cada 6 horas [citation:5][citation:8]
+  schedule:
+    - cron:  '0 */6 * * *'   # A las 0 minutos, cada 6 horas (UTC)
+    # - cron:  '*/30 * * * *' # (Opcional) Para probar: cada 30 minutos
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    name: Actualizar el índice de películas
+    steps:
+      - name: ⬇️ Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Instalar dependencias
+        run: npm install megajs axios
+
+      - name: 🚀 Ejecutar el indexador
+        # El script 'indexador.js' leerá las credenciales de process.env
+        run: node indexador.js
+        env:
+          MEGA_EMAIL: ${{ secrets.MEGA_EMAIL }}
+          MEGA_PASSWORD: ${{ secrets.MEGA_PASSWORD }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
+      - name: 📤 Subir el nuevo peliculas.json
+        # Esta acción sube los cambios de vuelta al repositorio [citation:4][citation:7]
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Actualización automática del índice de películas"
+          file_pattern: 'peliculas.json'
